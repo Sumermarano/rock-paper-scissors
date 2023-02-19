@@ -3,42 +3,47 @@ function computerSelection() {
     return choices[Math.floor(Math.random() * 3)];
 }
 
-function userSelection() {
-    let choice = prompt("Rock, Paper or Scissors");
-    return choice.toLowerCase();
-}
-
 function playRound(com, usr) {
     if (usr === com) {
-        return console.log("It's a tie!");
+        return board.textContent = "It's a tie!";
     } else if (usr === "rock" && com === "scissors" || usr === "paper" && com === "rock" || usr === "scissors" && com === "paper") {
-        console.log(`You Win! ${usr} beats ${com}`);
-        return 'usr'; 
+        board.textContent = `You Win! ${usr} beats ${com}.`;
+        return usrScore++; 
     } else {
-        console.log(`You Lose! ${com} beats ${usr}`);
-        return 'com'; 
+        board.textContent = `You lose! ${com} beats ${usr}.`;
+        return comScore++; 
     }
 }
 
-function game() {
-    let usrScore = 0;
-    let comScore = 0;
-    for (let i = 0; i < 5; i++) {
-        let round = playRound(computerSelection(), userSelection());
-        if (round === 'usr') {
-            usrScore++;
-        } else if (round === 'com') {
-            comScore++;
-        }
-    }
-
-    if (usrScore > comScore) {
-        console.log("You Won!!!");
-    } else if (usrScore < comScore) {
-        console.log("Oh No! You Lost.");
-    } else {
-        console.log("It's a Draw!");
+function check() {
+    if (usrScore === 5) {
+        board.textContent = "YAYA! You Won.";
+        usrScore = 0;
+        comScore = 0;
+    } else if (comScore === 5) {
+        board.textContent = "Oh NO! You Lost.";
+        usrScore = 0;
+        comScore = 0;
     }
 }
 
-game();
+function updateScore() {
+    const updateUsr = document.querySelector('.user-score');
+    const updateCom = document.querySelector('.com-score');
+    updateUsr.textContent = usrScore;
+    updateCom.textContent = comScore;
+}
+
+let usrScore = 0;
+let comScore = 0;
+const board = document.querySelector('.board');
+const buttons = document.querySelectorAll('button');
+
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        playRound(computerSelection(), button.getAttribute('id'));
+        updateScore();
+        check();
+    });
+});
+
